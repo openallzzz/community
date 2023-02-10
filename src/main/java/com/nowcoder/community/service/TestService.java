@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-@Service // 业务注解
+//@Service // 业务注解
 //@Scope("prototype") 多例
 public class TestService {
 

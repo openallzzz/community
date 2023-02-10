@@ -33,26 +33,26 @@ class CommunityApplicationTests implements ApplicationContextAware {
 
     @Test
     public void testApplicationContext() {
-        System.out.println(applicationContext);
+//        System.out.println(applicationContext);
 
         // 面向接口编程
-        testDao dao = applicationContext.getBean(testDao.class);
-        System.out.println(dao.select());
+//        testDao dao = applicationContext.getBean(testDao.class);
+//        System.out.println(dao.select());
     }
 
     @Test
     public void testService() {
-        TestService service = applicationContext.getBean(TestService.class);
-        System.out.println(service);
+//        TestService service = applicationContext.getBean(TestService.class);
+//        System.out.println(service);
 //        service.init();
 //        service.destory();
     }
 
     @Test
     public void testConfig() {
-        SimpleDateFormat simpleDateFormat =
-                applicationContext.getBean(SimpleDateFormat.class);
-
-        System.out.println(simpleDateFormat.format(new Date()));
+//        SimpleDateFormat simpleDateFormat =
+//                applicationContext.getBean(SimpleDateFormat.class);
+//
+//        System.out.println(simpleDateFormat.format(new Date()));
     }
 }
