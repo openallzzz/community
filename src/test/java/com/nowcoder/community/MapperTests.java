@@ -76,13 +76,18 @@ public class MapperTests {
 
     @Test
     public void testLoginTicket() {
-        LoginTicket loginTicket = new LoginTicket();
-        loginTicket.setUserId(110);
-        loginTicket.setTicket("abc");
-        loginTicket.setStatus(0);
-        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+//        LoginTicket loginTicket = new LoginTicket();
+//        loginTicket.setUserId(110);
+//        loginTicket.setTicket("abc");
+//        loginTicket.setStatus(0);
+//        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+//
+//        System.out.println(loginTicketMapper.insertLoginTicket(loginTicket));
 
-        System.out.println(loginTicketMapper.insertLoginTicket(loginTicket));
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("abc", 1);
     }
 
 }
