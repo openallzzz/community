@@ -11,11 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 @Controller
@@ -46,7 +50,7 @@ public class UserController {
 
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
-        if(headerImage == null) {
+        if (headerImage == null) {
             model.addAttribute("error", "您还没有选择图片！");
             return "/site/setting";
         }
@@ -55,7 +59,7 @@ public class UserController {
         assert fileName != null;
         String suffix = fileName.substring(fileName.lastIndexOf(".")); // Examples: .png
 
-        if(StringUtils.isBlank(suffix)) {
+        if (StringUtils.isBlank(suffix)) {
             model.addAttribute("error", "文件格式不正确！");
             return "/site/setting";
         }
@@ -78,6 +82,29 @@ public class UserController {
         userService.updateHeader(user.getId(), headerUrl);
 
         return "redirect:/index";
+    }
+
+    @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
+    public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {
+        fileName = uploadPath + "/" + fileName;
+
+        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        response.setContentType("image/" + suffix);
+        try(
+                FileInputStream fis = new FileInputStream(fileName);
+                ServletOutputStream os = response.getOutputStream();
+        ) {
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = fis.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+
+        } catch (IOException e) {
+            logger.error("读取用户头像失败：" + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
 }
