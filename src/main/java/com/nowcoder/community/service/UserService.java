@@ -172,4 +172,60 @@ public class UserService implements CommunityConstant {
     public int updateHeader(int userId, String headerUrl) {
         return userMapper.updateHeader(userId, headerUrl); // 更新用户头像
     }
+
+    public User findUserByName(String username) {
+        return userMapper.selectByName(username);
+    }
+
+    public Map<String, Object> resetPassword(String email, String password) {
+        HashMap<String, Object> map = new HashMap<>();
+
+        if(StringUtils.isBlank(email)) {
+            map.put("emailMsg", "邮箱不能为空！");
+            return map;
+        }
+
+        if(StringUtils.isBlank(password)) {
+            map.put("passwordMsg", "密码不能为空！");
+            return map;
+        }
+
+        User user = userMapper.selectByEmail(email);
+        if(user == null) {
+            map.put("emailMsg", "该邮箱尚未注册！");
+            return map;
+        }
+
+        password = CommunityUtil.md5(password + user.getSalt());
+        userMapper.updatePassword(user.getId(), password);
+
+        map.put("user", user);
+        return map;
+    }
+
+    public Map<String, Object> updatePassword(int userId, String oldPassword, String newPassword) {
+        Map<String, Object> map = new HashMap<>();
+
+        if(StringUtils.isBlank(oldPassword)) {
+            map.put("oldPasswordMsg", "原密码不能为空！");
+            return map;
+        }
+
+        if(StringUtils.isBlank(newPassword)) {
+            map.put("newPasswordMsg", "新密码不能为空！");
+            return map;
+        }
+
+        User user = userMapper.selectById(userId);
+        oldPassword = CommunityUtil.md5(oldPassword + user.getSalt()); // 存的密码 = （密码 + 盐） => md5加密
+        if(!user.getPassword().equals(oldPassword)) {
+            map.put("oldPasswordMsg", "原密码输入有误！");
+            return map;
+        }
+
+        newPassword = CommunityUtil.md5(newPassword + user.getSalt());
+        userMapper.updatePassword(userId, newPassword);
+
+        return map;
+    }
 }
