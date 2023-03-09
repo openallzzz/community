@@ -38,5 +38,11 @@
         </if>
     </select>
 
+    <select id="selectDiscussPostById" resultType="com.nowcoder.community.entity.DiscussPost">
+        select <include refid="selectFields"/>
+        from discuss_post
+        where id = #{id}
+    </select>
+
 
 </mapper>
