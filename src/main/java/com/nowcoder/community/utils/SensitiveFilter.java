@@ -22,7 +22,7 @@ public class SensitiveFilter {
     // 替换符：将敏感词替换为该字符串
     private static final String REPLACEMENT = "###";
 
-    private final TrieNode rootNode = new TrieNode();
+    private static final TrieNode rootNode = new TrieNode();
 
     @PostConstruct
     public void init() {
@@ -61,7 +61,7 @@ public class SensitiveFilter {
      * @param text 待过滤的文本
      * @return 过滤后的文本
      */
-    public String filter(String text) {
+    public static String filter(String text) {
         if (StringUtils.isBlank(text)) {
             return null;
         }
@@ -104,7 +104,7 @@ public class SensitiveFilter {
         return sb.toString();
     }
 
-    private boolean isSymbol(Character c) {
+    private static boolean isSymbol(Character c) {
         // 0x2E80 ~ 0x9FFF 是东亚文字范围
         return !CharUtils.isAsciiAlphanumeric(c) && (c < 0x2E80 || c > 0x9FFF);
     }
