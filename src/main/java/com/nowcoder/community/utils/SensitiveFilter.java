@@ -61,7 +61,7 @@ public class SensitiveFilter {
      * @param text 待过滤的文本
      * @return 过滤后的文本
      */
-    public static String filter(String text) {
+    public String filter(String text) {
         if (StringUtils.isBlank(text)) {
             return null;
         }
