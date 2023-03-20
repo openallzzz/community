@@ -68,4 +68,43 @@ public class MessageController {
 
         return "/site/letter";
     }
+
+    @RequestMapping(path = "/letter/detail/{conversationId}", method = RequestMethod.GET)
+    public String getLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
+        // 分页设置
+        page.setLimit(5);
+        page.setPath("/letter/detail/" + conversationId);
+        page.setRows(messageService.findLetterCount(conversationId));
+
+        // 私信列表
+        List<Message> letterList = messageService.findLetters(conversationId, page.getOffset(), page.getLimit());
+
+        List<Map<String, Object>> letters = new ArrayList<>();
+        if (letterList != null) {
+            for (Message message : letterList) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("letter", message);
+                map.put("fromUser", userService.findUserById(message.getFromId()));
+                letters.add(map);
+            }
+        }
+
+        model.addAttribute("letters", letters);
+
+        model.addAttribute("target", getLetterTarget(conversationId));
+
+        return "/site/letter-detail";
+    }
+
+    private User getLetterTarget(String conversationId) {
+        String[] ids = conversationId.split("_");
+        int id0 = Integer.parseInt(ids[0]);
+        int id1 = Integer.parseInt(ids[1]);
+
+        if(hostHolder.getUser().getId() == id0) {
+            return userService.findUserById(id1);
+        }
+
+        return userService.findUserById(id0);
+    }
 }
