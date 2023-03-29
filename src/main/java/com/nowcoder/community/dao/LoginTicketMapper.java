@@ -4,7 +4,8 @@ import com.nowcoder.community.entity.LoginTicket;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
-public interface LoginTicketMapper {
+@Deprecated
+public interface LoginTicketMapper { // 不推荐使用了，有更好的方式代替了
 
     @Insert("insert into login_ticket(user_id, ticket, status, expired) " +
             "values(#{userId}, #{ticket}, #{status}, #{expired})")
