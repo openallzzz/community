@@ -28,7 +28,11 @@ public class ServiceLogAspect {
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        assert attributes != null;
+
+        if (attributes == null) {
+            return ; // consumer调用service时，获取不到相关的客户端请求数据，直接返回即可
+        }
+
         HttpServletRequest request = attributes.getRequest();
 
         String host = request.getRemoteHost();
