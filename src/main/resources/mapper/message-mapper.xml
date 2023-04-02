@@ -82,5 +82,29 @@
         </if>
     </select>
 
+    <select id="selectLatestNotice" resultType="com.nowcoder.community.entity.Message">
+        select <include refid="selectFields"/>
+        from message
+        where id in (
+            select max(id) from message
+            where status != 2 and from_id = 1 and to_id = #{userId}
+            and conversation_id = #{topic}
+        )
+    </select>
+
+    <select id="selectNoticeCount" resultType="java.lang.Integer">
+        select count(id) from message
+        where status != 2 and from_id = 1 and to_id = #{userId}
+        and conversation_id = #{topic}
+    </select>
+
+    <select id="selectNoticeUnreadCount" resultType="java.lang.Integer">
+        select count(id) from message
+        where status = 0 and from_id = 1 and to_id = #{userId}
+        <if test="topic!=null">
+            and conversation_id = #{topic}
+        </if>
+    </select>
+
 
 </mapper>
