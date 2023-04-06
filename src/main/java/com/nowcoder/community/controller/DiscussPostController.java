@@ -2,8 +2,10 @@ package com.nowcoder.community.controller;
 
 import com.nowcoder.community.entity.Comment;
 import com.nowcoder.community.entity.DiscussPost;
+import com.nowcoder.community.entity.Event;
 import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.event.EventProducer;
 import com.nowcoder.community.service.CommentService;
 import com.nowcoder.community.service.DiscussPostService;
 import com.nowcoder.community.service.LikeService;
@@ -42,12 +44,15 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
     public String addDiscussPost(String title, String content) {
         User user = hostHolder.getUser();
 
-        if(user == null) {
+        if (user == null) {
             return CommunityUtil.getJSONString(403, "您还未登录，无法发送帖子！");
         }
 
@@ -58,6 +63,16 @@ public class DiscussPostController implements CommunityConstant {
         discussPost.setCreateTime(new Date());
 
         discussPostService.addDiscussPost(discussPost);
+
+        // 触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(user.getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(discussPost.getId());
+
+        // 发送至Kafka消息队列
+        eventProducer.fireEvent(event);
 
         // 报错的情况统一处理
         return CommunityUtil.getJSONString(0, "发布帖子成功！");
@@ -91,8 +106,8 @@ public class DiscussPostController implements CommunityConstant {
 
         // 评论VO列表
         List<Map<String, Object>> commentVoList = new ArrayList<>();
-        if(comments != null) {
-            for(Comment comment : comments) {
+        if (comments != null) {
+            for (Comment comment : comments) {
                 // 评论的VO
                 Map<String, Object> commentVo = new HashMap<>();
                 // 评论
@@ -113,8 +128,8 @@ public class DiscussPostController implements CommunityConstant {
 
                 // 回复的VO列表
                 List<Map<String, Object>> replyVoList = new ArrayList<>();
-                if(replyList != null) {
-                    for(Comment reply : replyList) {
+                if (replyList != null) {
+                    for (Comment reply : replyList) {
                         Map<String, Object> replyVo = new HashMap<>();
 
                         // 回复
