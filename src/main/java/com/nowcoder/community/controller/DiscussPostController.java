@@ -170,7 +170,13 @@ public class DiscussPostController implements CommunityConstant {
     @RequestMapping(path = "/top", method = RequestMethod.POST)
     @ResponseBody
     public String setTop(int id) {
-        discussPostService.updateType(id, 1);
+        DiscussPost discussPostById = discussPostService.findDiscussPostById(id);
+        int type = discussPostById.getType() ^ 1;
+
+        discussPostService.updateType(id, type);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", type);
 
         // 触发发帖事件 (同步到ES服务器)
         Event event = new Event()
@@ -180,14 +186,19 @@ public class DiscussPostController implements CommunityConstant {
                 .setEntityId(id);
         eventProducer.fireEvent(event);
 
-        return CommunityUtil.getJSONString(0);
+        return CommunityUtil.getJSONString(0, null, map);
     }
 
     // 加精请求
     @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
     @ResponseBody
     public String setWonderful(int id) {
-        discussPostService.updateStatus(id, 1);
+        DiscussPost discussPostById = discussPostService.findDiscussPostById(id);
+        int status = discussPostById.getStatus() ^ 1;
+        discussPostService.updateStatus(id, status);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);
 
         // 触发发帖事件 (同步到ES服务器)
         Event event = new Event()
@@ -197,7 +208,7 @@ public class DiscussPostController implements CommunityConstant {
                 .setEntityId(id);
         eventProducer.fireEvent(event);
 
-        return CommunityUtil.getJSONString(0);
+        return CommunityUtil.getJSONString(0, null, map);
     }
 
     // 删除请求
