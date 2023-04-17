@@ -2,7 +2,6 @@ package com.nowcoder.community.service;
 
 import com.nowcoder.community.dao.elasticsearch.DiscussPostRepository;
 import com.nowcoder.community.entity.DiscussPost;
-import org.apache.ibatis.javassist.compiler.ast.Keyword;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;

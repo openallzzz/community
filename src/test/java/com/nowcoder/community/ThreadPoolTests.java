@@ -125,9 +125,9 @@ public class ThreadPoolTests {
     }
 
     // 6.Spring定时任务线程池(简化)
-    @Test
-    public void testThreadPoolTaskSchedulerSimple() {
-        sleep(30000);
-    }
+//    @Test
+//    public void testThreadPoolTaskSchedulerSimple() {
+//        sleep(30000);
+//    }
 
 }

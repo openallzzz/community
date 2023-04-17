@@ -10,10 +10,9 @@ public class RedisKeyUtil {
     private static final String PREFIX_KAPTCHA = "kaptcha";
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user";
-
     private static final String PREFIX_UV = "uv"; // Unique Visitor
-
     private static final String PREFIX_DAV = "dau"; // Daily Active User
+    private static final String PREFIX_POST = "post";
 
     // 某个实体的赞
     // like:entity:entityType:entityId -> set(userId) -> 谁给这个实体点过赞
@@ -74,4 +73,8 @@ public class RedisKeyUtil {
         return PREFIX_DAV + SPLIT + startDate + SPLIT + endDate;
     }
 
+    // 帖子分数
+    public static String getPostScoreKey() {
+        return PREFIX_POST + SPLIT + "score";
+    }
 }

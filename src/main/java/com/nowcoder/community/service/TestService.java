@@ -31,7 +31,7 @@ public class TestService {
         System.out.println("execute1");
     }
 
-    @Scheduled(initialDelay = 10000, fixedRate = 1000)
+//    @Scheduled(initialDelay = 10000, fixedRate = 1000)
     public void execute2() {
         System.out.println("execute2");
     }
