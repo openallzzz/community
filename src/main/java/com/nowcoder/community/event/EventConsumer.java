@@ -165,13 +165,13 @@ public class EventConsumer implements CommunityConstant {
             logger.info("生成长图失败：" + cmd);
         }
 
-        // 启用定时器，监视该图片，一旦生成，上传至七牛云
+        /*// 启用定时器，监视该图片，一旦生成，上传至七牛云 （弃用）
         UploadTask task = new UploadTask(fileName, suffix);
         Future future = taskScheduler.scheduleAtFixedRate(task, 500);
-        task.setFuture(future);
+        task.setFuture(future);*/
     }
 
-    class UploadTask implements Runnable {
+  /*  class UploadTask implements Runnable {
         // 文件名称
         private String fileName;
         // 文件后缀
@@ -242,6 +242,6 @@ public class EventConsumer implements CommunityConstant {
                 logger.info("等待图片生成[" + fileName + "].");
             }
         }
-    }
+    }*/
 
 }

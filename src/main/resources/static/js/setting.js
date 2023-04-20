@@ -17,6 +17,7 @@ function clear_error() {
 	$(this).removeClass("is-invalid");
 }
 
+/* 弃用
 $(function () {
 	$("#uploadForm").submit(upload);
 });
@@ -49,4 +50,4 @@ function upload() {
 		}
 	});
 	return false;
-}
+}*/

@@ -72,7 +72,7 @@ public class UserController implements CommunityConstant {
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage(Model model) {
-        // 上传文件名称
+        /*// 上传文件名称
         String fileName = CommunityUtil.generateUUID();
         // 设置响应信息
         StringMap policy = new StringMap();
@@ -82,7 +82,7 @@ public class UserController implements CommunityConstant {
         String uploadToken = auth.uploadToken(headerBucketName, fileName, 3600, policy);
 
         model.addAttribute("uploadToken", uploadToken);
-        model.addAttribute("fileName", fileName);
+        model.addAttribute("fileName", fileName);*/
 
         return "/site/setting";
     }
@@ -101,7 +101,6 @@ public class UserController implements CommunityConstant {
         return CommunityUtil.getJSONString(0);
     }
 
-    // 弃用
     @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
@@ -139,7 +138,6 @@ public class UserController implements CommunityConstant {
         return "redirect:/index";
     }
 
-    // 弃用
     @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {
         fileName = uploadPath + "/" + fileName;
