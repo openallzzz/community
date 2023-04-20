@@ -13,12 +13,12 @@ import javax.annotation.PreDestroy;
 public class TestService {
 
     public TestService() {
-        System.out.println("实例化TestService");
+//        System.out.println("实例化TestService");
     }
 
     @PostConstruct
     public void init() {
-        System.out.println("初始化TestService");
+//        System.out.println("初始化TestService");
     }
 
     @PreDestroy
