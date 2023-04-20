@@ -58,7 +58,7 @@ public class UserController implements CommunityConstant {
     private HostHolder hostHolder;
 
     @Value("${qiniu.key.access}")
-    private String acessKey;
+    private String accessKey;
 
     @Value("${qiniu.key.secret}")
     private String secretKey;
@@ -78,7 +78,7 @@ public class UserController implements CommunityConstant {
         StringMap policy = new StringMap();
         policy.put("returnBody", CommunityUtil.getJSONString(0));
         // 生成上传凭证
-        Auth auth = Auth.create(acessKey, secretKey);
+        Auth auth = Auth.create(accessKey, secretKey);
         String uploadToken = auth.uploadToken(headerBucketName, fileName, 3600, policy);
 
         model.addAttribute("uploadToken", uploadToken);
