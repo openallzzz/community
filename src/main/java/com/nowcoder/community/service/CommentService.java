@@ -46,7 +46,7 @@ public class CommentService implements CommunityConstant {
         int rows = commentMapper.insertComment(comment);
 
         // 更新帖子的评论数量
-        if(comment.getEntityType() == ENTITY_TYPE_POST) {
+        if (comment.getEntityType() == ENTITY_TYPE_POST) {
             int count = commentMapper.selectCountByEntity(ENTITY_TYPE_POST, comment.getEntityId());
             discussPostService.updateCommentCount(comment.getEntityId(), count);
         }
@@ -58,4 +58,14 @@ public class CommentService implements CommunityConstant {
         return commentMapper.selectCommentById(id);
     }
 
+    /**
+     * 获取当前用户对帖子发布评论的数量
+     *
+     * @param userId
+     * @param entityType
+     * @return
+     */
+    public List<Comment> getByUserIdAndType(int userId, int entityType) {
+        return commentMapper.selectCountByEntityAndPub(userId, entityType);
+    }
 }

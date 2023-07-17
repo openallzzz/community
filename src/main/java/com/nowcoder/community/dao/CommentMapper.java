@@ -15,4 +15,13 @@ public interface CommentMapper {
     int insertComment(Comment comment);
 
     Comment selectCommentById(int id);
+
+    /**
+     * 获取当前用户对帖子发布评论的数量
+     *
+     * @param userId
+     * @param entityType
+     * @return
+     */
+    List<Comment> selectCountByEntityAndPub(int userId, int entityType);
 }

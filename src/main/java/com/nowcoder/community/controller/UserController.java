@@ -1,10 +1,11 @@
 package com.nowcoder.community.controller;
 
 import com.nowcoder.community.annotation.LoginRequired;
+import com.nowcoder.community.entity.Comment;
+import com.nowcoder.community.entity.DiscussPost;
+import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
-import com.nowcoder.community.service.FollowService;
-import com.nowcoder.community.service.LikeService;
-import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.service.*;
 import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.CommunityUtil;
 import com.nowcoder.community.utils.HostHolder;
@@ -15,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -26,6 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -66,6 +67,12 @@ public class UserController implements CommunityConstant {
 
     @Value("${qiniu.bucket.header.url}")
     private String headerBucketUrl;
+
+    @Autowired
+    private DiscussPostService discussPostService;
+
+    @Autowired
+    private CommentService commentService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -202,7 +209,68 @@ public class UserController implements CommunityConstant {
         }
         model.addAttribute("hasFollowed", hasFollowed);
 
+        // 判断当前要查看的用户是否是自己，用作前端展示优化
+        model.addAttribute("mySelf", hostHolder.getUser().getId() == userId);
+
         return "/site/profile";
+    }
+
+    /**
+     * 获取自己的所有帖子信息
+     *
+     * @param model
+     * @param page
+     * @return
+     */
+    @RequestMapping(path = "/posts", method = RequestMethod.GET)
+    public String getMyPosts(Model model, Page page) {
+        page.setRows(discussPostService.findDiscussPostRows(hostHolder.getUser().getId()));
+        page.setPath("/user/posts");
+
+        model.addAttribute("postCount", page.getRows());
+        List<DiscussPost> discussPostList = discussPostService
+                .findDiscussPosts(hostHolder.getUser().getId(), page.getOffset(), page.getLimit(), 0);
+        List<Map<String, Object>> discussPosts = new ArrayList<>();
+        if (discussPostList != null) {
+            for (DiscussPost post : discussPostList) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("post", post);
+
+                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                map.put("likeCount", likeCount);
+
+                discussPosts.add(map);
+            }
+        }
+
+        model.addAttribute("discussPosts", discussPosts);
+        return "/site/my-post";
+    }
+
+    @RequestMapping(path = "/reply", method = RequestMethod.GET)
+    public String getMyReply(Model model, Page page) {
+        // 获取当前用户对帖子发布评论的数量
+        List<Comment> comments = commentService.getByUserIdAndType(hostHolder.getUser().getId(), ENTITY_TYPE_POST);
+        page.setRows(comments != null ? comments.size() : 0);
+        page.setPath("/user/reply");
+
+        model.addAttribute("replyCount", page.getRows());
+
+        List<Map<String, Object>> replyVOList = new ArrayList<>();
+
+        if (comments != null && comments.size() > 0) {
+            for (Comment comment : comments) {
+                Map<String, Object> replyVO = new HashMap<>();
+                DiscussPost post = discussPostService.findDiscussPostById(comment.getEntityId());
+                replyVO.put("post", post);
+                replyVO.put("replyContent", comment.getContent());
+                replyVOList.add(replyVO);
+            }
+        }
+
+        model.addAttribute("replyVOList", replyVOList);
+
+        return "/site/my-reply";
     }
 
 }
