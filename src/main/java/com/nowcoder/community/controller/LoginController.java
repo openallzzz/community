@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -54,6 +55,11 @@ public class LoginController implements CommunityConstant {
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String getLoginPage() {
         return "/site/login";
+    }
+
+    @RequestMapping(path = "/forget", method = RequestMethod.GET)
+    public String getResetPasswordPage() {
+        return "/site/forget";
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
@@ -118,6 +124,37 @@ public class LoginController implements CommunityConstant {
         }
     }
 
+    @RequestMapping(path = "/resetpassword", method = RequestMethod.POST)
+    public String resetPassword(String email, String code, String password, Model model,
+                                @CookieValue("kaptchaOwner") String kaptchaOwner) {
+        Map<String, Object> map = userService.resetPassword(email, password);
+
+        String kaptcha = null;
+        if (StringUtils.isNotBlank(kaptchaOwner)) {
+            String redisKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
+            kaptcha = (String) redisTemplate.opsForValue().get(redisKey);
+        }
+
+        if (StringUtils.isBlank(kaptcha) || StringUtils.isBlank(code) || !kaptcha.equalsIgnoreCase(code)) {
+            User user = new User();
+            user.setEmail(email);
+            model.addAttribute("codeMsg", "验证码不正确！");
+            model.addAttribute("user", user);
+            return "/site/forget";
+        }
+
+        if (map.get("user") != null) {
+            model.addAttribute("user", map.get("user"));
+            model.addAttribute("msg", "密码重置成功！");
+            model.addAttribute("target", "/login");
+            return "/site/operate-result";
+        } else {
+            model.addAttribute("passwordMsg", map.get("passwordMsg"));
+            model.addAttribute("emailMsg", map.get("emailMsg"));
+            return "/site/forget";
+        }
+    }
+
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(String username, String password, String code, boolean rememberMe,
                         Model model,/* HttpSession session,*/ HttpServletResponse response,
@@ -152,7 +189,8 @@ public class LoginController implements CommunityConstant {
     }
 
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
-    public String logout(@CookieValue("ticket") String ticket) {
+    public String logout(@CookieValue("ticket") String ticket, ModelAndView modelAndView) {
+        modelAndView.clear();
         userService.logout(ticket);
         SecurityContextHolder.clearContext();
         return "redirect:/login";
