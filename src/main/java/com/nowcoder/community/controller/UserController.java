@@ -210,7 +210,11 @@ public class UserController implements CommunityConstant {
         model.addAttribute("hasFollowed", hasFollowed);
 
         // 判断当前要查看的用户是否是自己，用作前端展示优化
-        model.addAttribute("mySelf", hostHolder.getUser().getId() == userId);
+        if(hostHolder != null && hostHolder.getUser() != null) {
+            model.addAttribute("mySelf", hostHolder.getUser().getId() == userId);
+        } else {
+            model.addAttribute("mySelf", false);
+        }
 
         return "/site/profile";
     }

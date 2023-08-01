@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/global.css}"/>
-    <title>牛客网-首页</title>
+    <title>万象论坛</title>
 </head>
 <body>
 <div class="nk-container">
@@ -21,7 +21,7 @@
             <!-- 导航 -->
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <!-- logo -->
-                <a class="navbar-brand" href="#"></a>
+                <a class="navbar-brand" th:href="@{/index}">万象论坛</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -44,10 +44,19 @@
                         <li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser==null}">
                             <a class="nav-link" th:href="@{/login}">登录</a>
                         </li>
+                    </ul>
+
+                    <!-- 搜索 -->
+                    <form class="form-inline my-2 my-lg-0" method="get" th:action="@{/search}">
+                        <input class="form-control mr-sm-2" type="search" aria-label="Search" name="keyword"
+                               th:value="${keyword}"/>
+                        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
+                    </form>
+                    <ul class="navbar-nav ">
                         <li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${loginUser!=null}">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:30px;"/>
+                                <img th:src="${loginUser.headerUrl}" class="rounded-circle" style="width:35px;"/>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item text-center"
@@ -59,12 +68,6 @@
                             </div>
                         </li>
                     </ul>
-                    <!-- 搜索 -->
-                    <form class="form-inline my-2 my-lg-0" method="get" th:action="@{/search}">
-                        <input class="form-control mr-sm-2" type="search" aria-label="Search" name="keyword"
-                               th:value="${keyword}"/>
-                        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
-                    </form>
                 </div>
             </nav>
         </div>
@@ -77,10 +80,10 @@
                 <!-- 筛选条件 -->
                 <ul class="nav nav-tabs mb-3">
                     <li class="nav-item">
-                        <a th:class="|nav-link ${orderMode==0?'active':''}|" th:href="@{/index(orderMode=0)}">最新</a>
+                        <a th:class="|nav-link ${orderMode==0?'active':''}|" th:href="@{/index(orderMode=0)}">推荐</a>
                     </li>
                     <li class="nav-item">
-                        <a th:class="|nav-link ${orderMode==1?'active':''}|" th:href="@{/index(orderMode=1)}">最热</a>
+                        <a th:class="|nav-link ${orderMode==1?'active':''}|" th:href="@{/index(orderMode=1)}">热帖榜</a>
                     </li>
                 </ul>
                 <button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal"

@@ -6,7 +6,7 @@
 	<link rel="icon" href="https://static.nowcoder.com/images/logo_87_87.png"/>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/css/global.css}" />
-	<title>牛客网-个人主页</title>
+	<title>个人主页 - 万象论坛</title>
 </head>
 <body>
 	<div class="nk-container">
@@ -62,18 +62,22 @@
 		<div class="main">
 			<div class="container">
 				<!-- 选项 -->
-				<div class="position-relative">
+				<div class="position-relative" th:if="${loginUser != null}">
 					<ul class="nav nav-tabs">
 						<li class="nav-item">
 							<a class="nav-link active" th:href="@{|/user/profile/${loginUser.id}|}">
-								<span th:utext="${mySelf ? '我的信息' : 'Ta的信息'}">个人信息</span>
+								<span th:utext="${mySelf ? '我的信息' : 'TA的信息'}">我的信息</span>
 							</a>
 						</li>
 						<li class="nav-item" th:if="${mySelf}">
-							<a class="nav-link" th:href="@{/user/posts}">我的帖子</a>
+							<a class="nav-link" th:href="@{/user/posts}">
+								<span>我的帖子</span>
+							</a>
 						</li>
 						<li class="nav-item" th:if="${mySelf}">
-							<a class="nav-link" th:href="@{/user/reply}">发布的评论</a>
+							<a class="nav-link" th:href="@{/user/reply}">
+								<span>我的评论</span>
+							</a>
 						</li>
 					</ul>
 				</div>

@@ -5,6 +5,7 @@ import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.CommunityUtil;
+import com.nowcoder.community.utils.HostHolder;
 import com.nowcoder.community.utils.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,6 +35,9 @@ import java.util.concurrent.TimeUnit;
 public class LoginController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+    @Autowired
+    private HostHolder hostHolder;
 
     @Autowired
     private UserService userService;
@@ -190,9 +194,10 @@ public class LoginController implements CommunityConstant {
 
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public String logout(@CookieValue("ticket") String ticket, ModelAndView modelAndView) {
+        hostHolder.clear();
         modelAndView.clear();
         userService.logout(ticket);
         SecurityContextHolder.clearContext();
-        return "redirect:/login";
+        return "redirect:/index";
     }
 }
