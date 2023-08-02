@@ -33,6 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                 .antMatchers(
                         "/user/setting",
                         "/user/upload",
+                        "/user/reply",
+                        "/user/posts",
+                        "/user/updatePassword",
                         "/discuss/add",
                         "/comment/add/**",
                         "/letter/**",
