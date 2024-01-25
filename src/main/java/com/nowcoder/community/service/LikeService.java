@@ -25,12 +25,13 @@ public class LikeService {
 
                 operations.multi();
 
+                // 使用set存储点赞用户的id是为了满足后续功能的需要，还可以使用string的自增和自减来实现，但是扩展性比较差
                 if (isMember) {
                     operations.opsForSet().remove(entityLikeKey, userId);
-                    operations.opsForValue().decrement(userLikeKey);
+                    operations.opsForValue().decrement(userLikeKey); // 这里就是存储了点赞的数量的
                 } else {
                     operations.opsForSet().add(entityLikeKey, userId);
-                    operations.opsForValue().increment(userLikeKey);
+                    operations.opsForValue().increment(userLikeKey); // 这里就是存储了点赞的数量的
                 }
 
                 return operations.exec();

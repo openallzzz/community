@@ -107,7 +107,7 @@ public class LoginController implements CommunityConstant {
         // 将验证码存入session
         // session.setAttribute("kaptcha", text); // 验证码
 
-        // 验证码的归属
+        // 验证码的归属（登录的时候会带上这个归属信息作为访问redis存储验证码的key）
         String kaptchaOwner = CommunityUtil.generateUUID();
         Cookie cookie = new Cookie("kaptchaOwner", kaptchaOwner);
         cookie.setMaxAge(60);

@@ -30,6 +30,7 @@ public class FollowService implements CommunityConstant {
 
                 operations.multi(); // redis事务开始
 
+                // 使用zset是为了获取某个用户的粉丝列表，按照一定的顺序展示出来，这里根据的就是关注的时间作为排序因素
                 operations.opsForZSet().add(followeeKey, entityId, System.currentTimeMillis());
                 operations.opsForZSet().add(followerKey, userId, System.currentTimeMillis());
 
