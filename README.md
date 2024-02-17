@@ -1,3 +1,11 @@
+# 本地启动
+1. 启动 Kafka
+- 首先进入 Kafka 安装目录下
+- 先启动 zookeeper: `bin\windows\zookeeper-server-start.bat config\zookeeper.properties`
+- 再启动 Kafka: `bin\windows\kafka-server-start.bat config\server.properties`
+3. 启动 ES
+进入 ES 安装目录下，直接找 bin 下的 elasticsearch.bat 文件，点击启动即可。
+
 # 会话管理
 - cookie 
   - HTTP 是无状态的，无法处理连续性的业务，是有会话的，可以使用 HTTP 的头部扩展，
