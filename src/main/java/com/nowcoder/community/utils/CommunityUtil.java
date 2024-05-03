@@ -7,6 +7,8 @@ import org.springframework.util.DigestUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommunityUtil {
 
@@ -51,6 +53,24 @@ public class CommunityUtil {
         return getJSONString(code, null, null);
     }
 
+    private static final String EMAIL_PATTERN =
+            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" +
+                    "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
+    private static final Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+
+    /**
+     * 校验邮箱地址是否有效
+     *
+     * @param email 要校验的邮箱地址
+     * @return 如果邮箱地址有效返回true，否则返回false
+     */
+    public static boolean validate(final String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 
 }

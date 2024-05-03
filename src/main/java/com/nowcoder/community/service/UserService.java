@@ -64,6 +64,10 @@ public class UserService implements CommunityConstant {
             return map;
         }
 
+        if (user.getUsername().length() >= 20) {
+            map.put("usernameMsg", "账号不能超过20个字符");
+        }
+
         if (StringUtils.isBlank(user.getPassword())) {
             map.put("passwordMsg", "密码不能为空!");
             return map;
@@ -71,6 +75,11 @@ public class UserService implements CommunityConstant {
 
         if (StringUtils.isBlank(user.getEmail())) {
             map.put("emailMsg", "邮箱不能为空!");
+            return map;
+        }
+
+        if (CommunityUtil.validate(user.getEmail())) {
+            map.put("emailMsg", "请输入有效的邮箱");
             return map;
         }
 
@@ -281,11 +290,11 @@ public class UserService implements CommunityConstant {
             @Override
             public String getAuthority() {
                 switch (user.getType()) {
-                    case 1 :
+                    case 1:
                         return AUTHORITY_ADMIN;
-                    case 2 :
+                    case 2:
                         return AUTHORITY_MODERATOR;
-                    default :
+                    default:
                         return AUTHORITY_USER;
                 }
             }
